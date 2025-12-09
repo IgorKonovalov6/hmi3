@@ -7,7 +7,14 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 # Используем FetchContent для автоматической загрузки зависимостей
 include(FetchContent)
 
-# Загружаем и настраиваем SFML
+# Загружаем Google Test
+FetchContent_Declare(
+  googletest
+  GIT_REPOSITORY https://github.com/google/googletest.git
+  GIT_TAG release-1.12.1
+)
+
+# Загружаем SFML
 FetchContent_Declare(
     sfml
     GIT_REPOSITORY https://github.com/SFML/SFML.git
@@ -27,22 +34,25 @@ set(SFML_INSTALL_PKGCONFIG_FILES FALSE)
 set(SFML_INSTALL_CMAKE_MODULES FALSE)
 set(SFML_MISC_INSTALL_PREFIX "")
 
-FetchContent_MakeAvailable(sfml)
-
-# Находим Google Test
-find_package(GTest REQUIRED)
+# ЗАГРУЖАЕМ ОБЕ БИБЛИОТЕКИ
+FetchContent_MakeAvailable(googletest sfml)
 
 # Добавляем путь к заголовочным файлам
 include_directories(include)
 
 # Основная библиотека
-add_library(hmi3_lib
+add_library(hmi3_lib  
     src/container.cpp
     src/command_receiver.cpp
 )
 
+# Подключаем заголовки к библиотеке 
+target_include_directories(hmi3_lib PUBLIC 
+    ${CMAKE_CURRENT_SOURCE_DIR}/include
+)
+
 # Подключаем SFML к библиотеке
-target_link_libraries(hmi3_lib
+target_link_libraries(hmi3_lib PUBLIC 
     sfml-graphics
     sfml-window
     sfml-system
@@ -60,10 +70,13 @@ add_executable(hmi3_tests
     tests/test_container.cpp
     tests/test_command_receiver.cpp
 )
-target_link_libraries(hmi3_tests 
+
+include(GoogleTest)
+
+target_link_libraries(hmi3_tests PRIVATE
     hmi3_lib
-    GTest::gtest
-    GTest::gtest_main
+    gtest_main
+    gmock
 )
 
 enable_testing()
