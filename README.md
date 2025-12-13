@@ -13,8 +13,8 @@
 ## Требования
 
 - C++17 компилятор
-- CMake 3.18+
-- SFML 2.6.1 (автоматически загружается через FetchContent)
+- CMake
+- SFML
 
 ## Сборка
 
@@ -28,7 +28,6 @@ cmake --build .
 ./hmi3_tests.exe
 
 ## Linux
-
 1. Установите системные зависимости для графики:
 Ubuntu/Debian: sudo apt update && sudo apt install -y libx11-dev libxrandr-dev libxcursor-dev libxi-dev cmake g++ git
 Fedora/RHEL: sudo dnf install libX11-devel libXrandr-devel libXcursor-devel libXi-devel cmake gcc-c++ git
